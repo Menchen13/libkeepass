@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cassert>
 #include <fstream>
+#include <iomanip>
 #include <sstream>
 #ifdef DEBUG
 #include <iostream>
@@ -137,22 +138,37 @@ std::shared_ptr<Group> KdbxFile::GetGroup(const std::string& uuid_str) {
   return group;
 }
 
+// imma keep it a buck, GPT wrote this.
 std::time_t KdbxFile::ParseDateTime(const char* text) const {
-  // Check for the special KeePass 1x "never" timestamp.
+  // Special KeePass 1.x "never" timestamp.
   if (std::string(text) == "2999-12-28T22:59:59Z")
     return 0;
-  
-  std::tm tm;
+
+  std::tm tm{};
+#ifndef _WIN32
+  // POSIX path: use strptime + timegm
   char* res = strptime(text, "%Y-%m-%dT%H:%M:%S", &tm);
   if (res == nullptr) {
     assert(false);
     return 0;
   }
-
   // Format is expected to always be in UTC.
   assert(*res == 'Z' || *res == '\0');
-
   return timegm(&tm);
+#else
+  // Windows path: use std::get_time + _mkgmtime
+  std::istringstream ss(text);
+  ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S");
+  if (ss.fail()) {
+    assert(false);
+    return 0;
+  }
+  // Next character should be 'Z' or end of string
+  char next = 0;
+  ss.get(next);
+  assert(next == 'Z' || next == '\0');
+  return _mkgmtime(&tm);
+#endif
 }
 
 std::string KdbxFile::WriteDateTime(std::time_t time) const {

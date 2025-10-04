@@ -22,6 +22,7 @@
 #include <cassert>
 #include <fstream>
 #include <unordered_map>
+#include <limits>
 
 #include <openssl/sha.h>
 

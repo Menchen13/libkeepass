@@ -1,3 +1,8 @@
+out
 build
+__cmake_systeminformation
+.cache
 *.pyc
 *.swp
+CMakeUserPresets.json
+compile_commands.json

@@ -17,6 +17,9 @@
  */
 
 #pragma once
+#ifdef _WIN32
+#define _GNU_SOURCE
+#endif
 #include <ctime>
 #include <memory>
 #include <string>

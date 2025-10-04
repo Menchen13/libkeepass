@@ -4,22 +4,10 @@ libkeepass is a C++11 library for importing and exporting
 exporting from/to both the legacy KDB format, as well as the new KDBX format.
 
 # Building
-The following 3rd party libraries are required to build libkeepass:
-* [OpenSSL](https://www.openssl.org/)
-* [zlib](http://zlib.net)
-
-For running the unit tests [googletest](https://code.google.com/p/googletest/)
-is also required.
-
-To build, simply do the following:
-```sh
-make -j8
-```
-
-to run the unit tests, do the following:
-```sh
-make test
-```
+Has been changed to CMake for the build-System and conan is used to fetch the dependencies zlib and openssl.
+I have not added gtest as i dont need to build/run the tests.
+Note for building OpenSSL with conan and MinGW:
+Beware of a known [issue](https://github.com/conan-io/cmake-conan/issues/530#event-9832106162) for the conan package.
 
 # Using
 The main library entry points are the *KdbFile* and *KdbxFile* classes. They
